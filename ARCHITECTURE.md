@@ -29,6 +29,7 @@ Project
 ├── id / code / name / client / notes
 ├── elements[]
 ├── circuits[]
+├── safetyFunctions[]
 └── settings
 ```
 
@@ -40,18 +41,19 @@ All four design blocks use the shared `elements[]` collection and distinguish ow
 
 This shared model is intentional because an engineering component can affect multiple calculations (I/O, DC consumption, safety, power, cable, etc.).
 
-## Target extension for safety
-Do not replace `elements[]`. Extend the project aggregate with:
+## Functional safety Phase 1 extension
+Phase 1 preserves `elements[]` and extends the project aggregate with:
 
 ```text
 Project
 ├── elements[]
 ├── circuits[]
-├── safetyFunctions[]   <-- new
+├── safetyFunctions[]
 └── settings
 ```
 
 A safety function references existing elements rather than duplicating them.
+Projects persisted before Phase 1 are normalized on load with an empty `safetyFunctions[]` collection while preserving their elements, circuits and settings.
 
 ```text
 SafetyFunction
