@@ -1,0 +1,43 @@
+PRUEBAS REALIZADAS · v0.7
+
+ARCHIVOS
+- XML EPLAN leído correctamente.
+- Export original: atributo count=6580.
+- Nodos <part> parseados/normalizados: 6133.
+- eplan_catalog.json / eplan_catalog.js generados: OK.
+
+FRONTEND
+- JavaScript comprobado con `node --check`: OK.
+- Potencia reorganizada en flujo: receptores -> manuales -> circuitos -> general -> diferencial -> artículos.
+- Las protecciones no se introducen como receptores.
+- Fuentes DC: corriente nominal de salida separada de corriente de entrada AC.
+
+CASO S210 0,75 kW · 6SL5310-1BE10-8DF1
+- Corriente de entrada de regla Siemens: 2,8 A: OK.
+- Protector de motor requerido: familia 3RV2011-1FA.. / 5 A: OK.
+- Base EPLAN encuentra SIE.3RV2011-1FA10: OK.
+- Magnetotérmico Siemens exacto 5SY7306-7: no está en el XML: OK; debe ofrecer búsqueda Siemens en Internet.
+- Para cantidad=3 la propuesta está diseñada para crear 3 ramas físicas y reutilizar la selección de protección x3.
+
+DIFERENCIAL S210
+- Requisito: tipo B, 300 mA, superresistente/retardo breve si se utiliza RCCB en 3 AC: implementado.
+- XML contiene candidatos 4P tipo B 300 mA, entre otros Circutor P17222 y Lovato P1RC4P40B300.
+- Circutor P17222 está marcado como descartado para este requisito porque el fabricante especifica disparo instantáneo.
+- Otros candidatos sin información suficiente de retardo se muestran como 'Verificar', no como aprobados.
+
+FUENTE 24 VDC
+- ABB 1SVR427035R0000: catálogo detecta 24 VDC / 10 A de salida.
+- Esos 10 A no se suman como consumo de entrada de la máquina: OK.
+- Corriente de entrada queda pendiente de manual/consulta online: OK.
+
+BACKEND
+- Python compila: OK.
+- /api/health: OK; informa 6133 artículos normalizados.
+- /api/power/reference para S210 0,75 kW: OK.
+- /api/power/search-protection para 3RV2011-1FA..: encuentra 3RV2011-1FA10 en EPLAN: OK.
+- En este entorno la resolución DNS saliente del proceso Python puede estar bloqueada; la búsqueda web genérica se prueba en el PC del usuario con Internet.
+
+SUGERENCIA DE DISTRIBUCIÓN S210
+- Para varios S210 la app mantiene ramas individuales por defecto.
+- También muestra alternativa de instalación en grupo usando la regla Siemens: suma de corrientes de entrada <= 80% de In del dispositivo común.
+- Para 3 × S210 0,75 kW: suma 8,4 A; mínimo matemático por regla 80% = 10,5 A, pero el dispositivo común debe salir además de la tabla específica de instalación en grupo del fabricante.
