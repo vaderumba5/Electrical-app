@@ -4,6 +4,8 @@
 Extend the existing v0.7 project model so functional safety is a first-class project feature, while preserving every working v0.7 behavior.
 
 ## First implementation slice
+Status: implemented on the Functional Safety Phase 1 feature branch; pending review and merge.
+
 Implement only the following coherent slice:
 
 1. Extend `makeProject()` / normalization/migration so every project has `safetyFunctions: []`.

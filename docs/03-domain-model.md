@@ -44,7 +44,7 @@ Do not duplicate an existing physical component just because it participates in 
 ## Circuit
 A circuit represents a power branch / distribution design result. It may reference the source `elementId`.
 
-## SafetyFunction — target Phase 1 entity
+## SafetyFunction — Phase 1 entity
 
 Minimum proposed structure:
 
@@ -86,6 +86,8 @@ Each stage entry should support at least:
 - optional `proposedComponentId` when the engine proposes a library/article candidate,
 - role/channel metadata,
 - provenance/validation metadata.
+
+In the implemented Phase 1 slice, stages store only `{ "elementId": "..." }` links. An empty stage array means that component selection is pending. Proposed components and reliability parameters remain out of scope.
 
 ## SafetyLibraryItem — target normalized model
 Do not bind the app directly to the original SISTEMA library schema. Normalize imported records to a model containing only source-grounded fields, for example:

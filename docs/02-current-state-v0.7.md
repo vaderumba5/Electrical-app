@@ -34,10 +34,13 @@ The safety block currently manages generic safety elements such as:
 
 Legacy signal import can classify elements as safety based on SDI/SDO or safety-zone data.
 
-What is **not yet implemented**:
-- project-level safety functions,
+Phase 1 now adds project-level safety functions with:
 - PLr per function,
-- structured Input / Logic / Output chains,
+- structured Input / Logic / Output stages,
+- links to existing project elements by `elementId`,
+- explicit pending selection and manufacturer preferences.
+
+What is **not yet implemented**:
 - automatic component proposal for a target PLr,
 - SISTEMA library importer,
 - normalized SISTEMA safety data,
