@@ -41,6 +41,12 @@ Existing relevant fields include:
 
 Do not duplicate an existing physical component just because it participates in a safety function. Reference it from the safety function.
 
+### Adaptive power receiver metadata
+
+Power elements retain their existing electrical fields and add a `receiver` object for type-specific metadata: normalized `kind`, location, supply type, frequency, starting method, simultaneity, starting current, associated-equipment identity and per-field data provenance. Provenance is one of `manual`, `imported`, `calculated` or `assumed`. Fields that do not apply to the selected receiver kind are stored as empty/null and must not participate in future calculations.
+
+`receiver.calculations` stores traceable current results. `designCurrent` is the circuit Ib, `calculatedCurrent` keeps the independently calculated value for comparison when a plate/manufacturer current exists, and `demandCurrent` applies simultaneity only for aggregations. Each result retains status, unrounded value, unit, formula, inputs, missing data and warnings. Starting current remains separate and is explicitly excluded from Ib.
+
 ## Circuit
 A circuit represents a power branch / distribution design result. It may reference the source `elementId`.
 
@@ -108,3 +114,7 @@ SafetyLibraryItem
 ```
 
 The exact reliability fields must be derived from real SISTEMA/IFA library samples rather than guessed from this document.
+
+## SafetyLibrary — infrastructure
+
+The application-level `safetyLibraries[]` repository stores detected `.slb`, VDMA 66413 XML and identifiable SISTEMA XML sources independently of projects. Each library retains its source filename, format, import date, status and warnings. Components remain empty until a verified parser can extract them with traceability; safety parameters default to `null` and are never inferred from EPLAN.

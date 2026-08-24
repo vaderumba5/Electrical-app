@@ -3,7 +3,9 @@ const fs = require('node:fs');
 const vm = require('node:vm');
 
 const html = fs.readFileSync('index.html', 'utf8');
+const powerModel = html.match(/\/\/ ===== Adaptive power receiver model =====([\s\S]*?)\/\/ ===== End adaptive power receiver model =====/);
 const match = html.match(/\/\/ ===== Functional safety Phase 1: model =====([\s\S]*?)\/\/ ===== End functional safety Phase 1 model =====/);
+assert.ok(powerModel, 'No se encontró el modelo adaptativo de receptores');
 assert.ok(match, 'No se encontró el bloque de modelo Safety Phase 1 en index.html');
 
 const context = {
@@ -13,8 +15,11 @@ const context = {
     source24Ratings: [2.5, 5, 10],
   },
   clone: value => JSON.parse(JSON.stringify(value)),
+  num: value => Number.isFinite(Number(value)) ? Number(value) : 0,
+  isDC: value => /V?DC/i.test(String(value || '')),
 };
 vm.createContext(context);
+vm.runInContext(powerModel[1], context);
 vm.runInContext(match[1], context);
 
 const legacyElements = [
@@ -33,7 +38,10 @@ const legacy = {
 };
 
 const migrated = context.makeProject(legacy);
-assert.deepEqual(migrated.elements, legacyElements, 'La migración debe conservar elements');
+for (const original of legacyElements) {
+  const current = migrated.elements.find(element => element.id === original.id);
+  for (const [key, value] of Object.entries(original)) assert.deepEqual(current[key], value, `La migración debe conservar elements.${original.id}.${key}`);
+}
 assert.deepEqual(migrated.circuits, legacyCircuits, 'La migración debe conservar circuits');
 for (const [key, value] of Object.entries(legacy.settings)) {
   assert.deepEqual(migrated.settings[key], value, `La migración debe conservar settings.${key}`);

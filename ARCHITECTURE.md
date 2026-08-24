@@ -84,6 +84,8 @@ Critical engineering values should be sourced from verified manufacturer documen
 ## SISTEMA boundary
 SISTEMA/IFA integration should be isolated behind a dedicated import/normalization layer. The rest of the application should consume a normalized safety-component model and should not depend directly on a vendor/library file structure.
 
+Safety libraries are persisted in the application-level repository (`safetyLibraries[]`), outside individual projects, so the same imported source can be reused. The current infrastructure detects supported containers and records provenance. It does not interpret Firebird `.slb` schemas or calculate safety performance.
+
 Target flow:
 
 ```text
